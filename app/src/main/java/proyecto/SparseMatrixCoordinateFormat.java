@@ -78,9 +78,9 @@ public class SparseMatrixCoordinateFormat {
     public void setValue(int i, int j, int value) throws OperationNotSupportedException {
         // Cambiar los atributos rows, cols, values y matrix aqui
         this.matrix[i][j] = value;
-        int[] new_col = new int[this.columns.length + 1];
-        int[] new_fil = new int[this.rows.length + 1];
-        int[] new_value = new int[this.values.length + 1];
+        int[] newCol = new int[this.columns.length + 1];
+        int[] newFil = new int[this.rows.length + 1];
+        int[] newValue = new int[this.values.length + 1];
 
         // Llenar las nuevas listas, añadiendo el dato ingresado
         int cnt = 0; // para saber cuantos elementos hay en la fila que se va a insertar el nuevo
@@ -95,31 +95,31 @@ public class SparseMatrixCoordinateFormat {
             }
         }
 
-        int location_dato = whereBegins;
+        int locationDato = whereBegins;
         for (int r = whereBegins; r < whereBegins + cnt; r++) {
-            if (location_dato < this.columns[r]) {
-                location_dato = this.columns[r];
+            if (locationDato < this.columns[r]) {
+                locationDato = this.columns[r];
             }
         }
-        new_fil[location_dato] = i;
-        new_col[location_dato] = j;
-        new_value[location_dato] = value;
+        newFil[locationDato] = i;
+        newCol[locationDato] = j;
+        newValue[locationDato] = value;
 
-        for (int r = 0; r < location_dato; r++) {
-            new_fil[r] = this.rows[r];
-            new_col[r] = this.columns[r];
-            new_value[r] = this.values[r];
+        for (int r = 0; r < locationDato; r++) {
+            newFil[r] = this.rows[r];
+            newCol[r] = this.columns[r];
+            newValue[r] = this.values[r];
         }
 
-        for (int r = location_dato + 1; r <= this.rows.length; r++) {
-            new_fil[r] = this.rows[r - 1];
-            new_col[r] = this.columns[r - 1];
-            new_value[r] = this.values[r - 1];
+        for (int r = locationDato + 1; r <= this.rows.length; r++) {
+            newFil[r] = this.rows[r - 1];
+            newCol[r] = this.columns[r - 1];
+            newValue[r] = this.values[r - 1];
         }
 
-        this.rows = new_fil;
-        this.columns = new_col;
-        this.values = new_value;
+        this.rows = newFil;
+        this.columns = newCol;
+        this.values = newValue;
 
     }
 
@@ -145,7 +145,7 @@ public class SparseMatrixCoordinateFormat {
 
     /*
      * This method returns a representation of the Squared matrix
-     * 
+     *
      * @return object that contests the squared matrix;
      */
     public SparseMatrixCoordinateFormat getSquareMatrix() throws OperationNotSupportedException {
@@ -162,14 +162,14 @@ public class SparseMatrixCoordinateFormat {
 
     /*
      * This method returns a representation of the transposed matrix
-     * 
+     *
      * @return object that contests the transposed matrix;
      */
     public SparseMatrixCoordinateFormat getTransposedMatrix() throws OperationNotSupportedException {
         SparseMatrixCoordinateFormat transposedMatrix = new SparseMatrixCoordinateFormat();
         // Usar los metodos Set aqui de los atributos
-        int[] trans_row = new int[this.rows.length];
-        int[] trans_col = new int[this.columns.length];
+        int[] transRow = new int[this.rows.length];
+        int[] transCol = new int[this.columns.length];
         int[] values = new int[this.values.length];
         int[][] matrix = new int[this.columns.length][this.rows.length];
         for (int i = 0; i < matrix.length; i++) {
@@ -181,15 +181,15 @@ public class SparseMatrixCoordinateFormat {
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
                 if (matrix[i][j] != 0) {
-                    trans_row[z] = i;
-                    trans_col[z] = j;
+                    transRow[z] = i;
+                    transCol[z] = j;
                     values[z] = matrix[i][j];
                     z++;
                 }
             }
         }
-        transposedMatrix.setRows(trans_row);
-        transposedMatrix.setColumns(trans_col);
+        transposedMatrix.setRows(transRow);
+        transposedMatrix.setColumns(transCol);
         transposedMatrix.setValues(values);
         return transposedMatrix;
     }

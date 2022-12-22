@@ -33,7 +33,7 @@ public class SparseMatrixCSR {
         // En el formato comprimido por filas, la lista de las filas tiene tamaño de la
         // filas de la matrix +1
         this.rows = new int[this.matrix.length + 1];
-        boolean start_row = false; // indica cuando empieza una nueva fila.
+        boolean startRow = false; // indica cuando empieza una nueva fila.
         int r = 0; // iterador para la lista fila
 
         /**
@@ -64,17 +64,17 @@ public class SparseMatrixCSR {
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
                 if (j == 0) {
-                    start_row = true;
+                    startRow = true;
                 }
                 if (matrix[i][j] != 0) {
                     values.add(matrix[i][j]);
                     columns.add(j);
-                    if (start_row) {
+                    if (startRow) {
                         rows[r] = values.size() - 1;
                         r++;
-                        start_row = false;
+                        startRow = false;
                     }
-                } else if (j == matrix[0].length - 1 && start_row) {
+                } else if (j == matrix[0].length - 1 && startRow) {
                     rows[r] = values.size();
                     r++;
                 }
@@ -140,12 +140,12 @@ public class SparseMatrixCSR {
      * guardará el valor en row_value.
      */
     public int[] getRow(int i) throws OperationNotSupportedException {
-        int[] row_value = new int[mayor(this.columns) + 1];
+        int[] rowValue = new int[mayor(this.columns) + 1];
         for (int z = this.rows[i]; z < this.rows[i + 1]; z++) {
-            row_value[this.columns[z]] = this.values[z];
+            rowValue[this.columns[z]] = this.values[z];
         }
 
-        return row_value;
+        return rowValue;
     }
 
     /**
@@ -162,16 +162,16 @@ public class SparseMatrixCSR {
      * guardando los valores en el nuevo arreglo.
      */
     public int[] getColumn(int j) throws OperationNotSupportedException {
-        int[] col_value = new int[this.rows.length - 1];
-        for (int i = 0; i < col_value.length; i++) {
+        int[] colValue = new int[this.rows.length - 1];
+        for (int i = 0; i < colValue.length; i++) {
             for (int z = this.rows[i]; z < this.rows[i + 1]; z++) {
                 if (this.columns[z] == j) {
-                    col_value[i] = this.values[z];
+                    colValue[i] = this.values[z];
                     continue;
                 }
             }
         }
-        return col_value;
+        return colValue;
     }
 
     /**
@@ -190,35 +190,35 @@ public class SparseMatrixCSR {
      * hasta agregar el nuevo valor
      */
     public void setValue(int i, int j, int value) throws OperationNotSupportedException {
-        int[] new_values = new int[this.values.length + 1];
-        int[] new_columns = new int[this.columns.length + 1];
+        int[] newValues = new int[this.values.length + 1];
+        int[] newColumns = new int[this.columns.length + 1];
         int cr = 0; // iterador para la listas de columnas y valores
         this.matrix[i][j] = value;
         for (int y = 0; y < this.rows.length - 1; y++) {
             if (y == i) {
                 for (int z = this.rows[y]; z < this.rows[y + 1]; z++) {
                     if (j < this.columns[z]) {
-                        new_values[cr] = value;
-                        new_columns[cr] = j;
+                        newValues[cr] = value;
+                        newColumns[cr] = j;
                         cr++;
                         break;
                     } else {
-                        new_columns[cr] = this.columns[z];
-                        new_values[cr] = this.values[z];
+                        newColumns[cr] = this.columns[z];
+                        newValues[cr] = this.values[z];
                         cr++;
                     }
 
                 }
                 if (j > this.columns[this.rows[y + 1] - 1]) {
-                    new_values[cr] = value;
-                    new_columns[cr] = j;
+                    newValues[cr] = value;
+                    newColumns[cr] = j;
                     cr++;
                     break;
                 }
             } else if (y < i) {
                 for (int z = this.rows[y]; z < this.rows[y + 1]; z++) {
-                    new_columns[cr] = this.columns[z];
-                    new_values[cr] = this.values[z];
+                    newColumns[cr] = this.columns[z];
+                    newValues[cr] = this.values[z];
                     cr++;
                 }
             } else {
@@ -230,9 +230,9 @@ public class SparseMatrixCSR {
          * Este for se encarga de copiar los datos que faltan en los nuevos arreglos
          * cr es la posición que indica donde se puede seguir insertando
          */
-        for (int y = cr; y < new_columns.length; y++) {
-            new_columns[y] = this.columns[y - 1];
-            new_values[y] = this.values[y - 1];
+        for (int y = cr; y < newColumns.length; y++) {
+            newColumns[y] = this.columns[y - 1];
+            newValues[y] = this.values[y - 1];
         }
 
         /**
@@ -242,14 +242,14 @@ public class SparseMatrixCSR {
         for (int y = i + 1; y < this.rows.length; y++) {
             this.rows[y] = this.rows[y] + 1;
         }
-        this.columns = new_columns;
-        this.values = new_values;
+        this.columns = newColumns;
+        this.values = newValues;
 
     }
 
     /*
      * This method returns a representation of the Squared matrix
-     * 
+     *
      * @return object that contests the squared matrix;
      */
 
@@ -271,7 +271,7 @@ public class SparseMatrixCSR {
 
     /*
      * This method returns a representation of the transposed matrix
-     * 
+     *
      * @return object that contests the transposed matrix;
      */
     /**
@@ -309,52 +309,52 @@ public class SparseMatrixCSR {
      */
     public SparseMatrixCSR createRepresentationTrans(int[][] matrix) {
         SparseMatrixCSR matCSR = new SparseMatrixCSR();
-        int[] trans_col;
-        int[] trans_row = new int[matrix.length + 1];
-        int[] trans_values;
+        int[] transCol;
+        int[] transRow = new int[matrix.length + 1];
+        int[] transValues;
         LinkedList<Integer> values = new LinkedList<Integer>();
         LinkedList<Integer> columns = new LinkedList<Integer>();
-        boolean start_row = false; // indica cuando empieza una nueva fila.
+        boolean startRow = false; // indica cuando empieza una nueva fila.
         int r = 0; // iterador para la lista fila
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
                 if (j == 0) {
-                    start_row = true;
+                    startRow = true;
                 }
                 if (matrix[i][j] != 0) {
                     values.add(matrix[i][j]);
                     columns.add(j);
-                    if (start_row) {
-                        trans_row[r] = values.size() - 1;
+                    if (startRow) {
+                        transRow[r] = values.size() - 1;
                         r++;
-                        start_row = false;
+                        startRow = false;
                     }
-                } else if (j == matrix[0].length - 1 && start_row) {
-                    trans_row[r] = values.size();
+                } else if (j == matrix[0].length - 1 && startRow) {
+                    transRow[r] = values.size();
                     r++;
                 }
             }
         }
-        trans_row[r] = values.size();
+        transRow[r] = values.size();
 
         // Valores
-        trans_values = new int[values.size()];
+        transValues = new int[values.size()];
         int i = 0;
         for (int val : values) {
-            trans_values[i] = val;
+            transValues[i] = val;
             i++;
         }
 
         // Columnas
-        trans_col = new int[columns.size()];
+        transCol = new int[columns.size()];
         i = 0;
         for (int col : columns) {
-            trans_col[i] = col;
+            transCol[i] = col;
             i++;
         }
-        matCSR.setColumns(trans_col);
-        matCSR.setRows(trans_row);
-        matCSR.setValues(trans_values);
+        matCSR.setColumns(transCol);
+        matCSR.setRows(transRow);
+        matCSR.setValues(transValues);
         matCSR.setMatrix(matrix);
         return matCSR;
     }

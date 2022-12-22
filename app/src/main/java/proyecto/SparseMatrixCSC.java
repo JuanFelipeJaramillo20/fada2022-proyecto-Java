@@ -81,47 +81,47 @@ public class SparseMatrixCSC {
      * los que tengan valor
      */
     public int[] getRow(int i) throws OperationNotSupportedException {
-        int[] row_value = new int[this.columns.length - 1];
-        for (int j = 0; j < row_value.length; j++) {
+        int[] rowValue = new int[this.columns.length - 1];
+        for (int j = 0; j < rowValue.length; j++) {
             for (int z = this.columns[j]; z < this.columns[j + 1]; z++) {
                 if (this.rows[z] == i) {
-                    row_value[j] = this.values[z];
+                    rowValue[j] = this.values[z];
                     continue;
                 }
             }
         }
-        return row_value;
+        return rowValue;
     }
 
     public int[] getColumn(int j) throws OperationNotSupportedException {
-        int[] col_value = new int[mayor(this.rows) + 1];
+        int[] colValue = new int[mayor(this.rows) + 1];
         // #este metodo es parecido al de obtener fila pero tenemos que iterar sobre las
         // columnas
 
         for (int i = 0; i < this.columns.length; i++) {
             if (i == j) {
                 for (int z = this.columns[i]; z < this.columns[i + 1]; z++) {
-                    col_value[this.rows[z]] = this.values[z];
+                    colValue[this.rows[z]] = this.values[z];
 
                 }
             }
         }
-        return col_value;
+        return colValue;
     }
 
     public void setValue(int i, int j, int value) throws OperationNotSupportedException {
-        ArrayList<Integer> Values = new ArrayList<Integer>();
-        ArrayList<Integer> Rows = new ArrayList<Integer>();
+        ArrayList<Integer> values = new ArrayList<Integer>();
+        ArrayList<Integer> rows = new ArrayList<Integer>();
 
         int a = 0;
-        for (int R : this.rows) {
-            Rows.add(R);
+        for (int r : this.rows) {
+            rows.add(r);
             a++;
         }
 
         a = 0;
-        for (int V : this.values) {
-            Values.add(V);
+        for (int v : this.values) {
+            values.add(v);
             a++;
         }
 
@@ -131,8 +131,8 @@ public class SparseMatrixCSC {
                 int lim1 = this.columns[a];
                 int lim2 = this.columns[a + 1] - 1;
                 while (lim1 <= lim2) {
-                    if (Rows.get(lim1) == i) {
-                        Values.add(lim1, value);
+                    if (rows.get(lim1) == i) {
+                        values.add(lim1, value);
                         break;
                     } else {
                         lim1++;
@@ -146,11 +146,11 @@ public class SparseMatrixCSC {
                 lim1 = this.columns[j];
                 lim2 = this.columns[j + 1] - 1;
                 while (lim1 <= lim2) {
-                    if (Rows.get(lim1) < i) {
+                    if (rows.get(lim1) < i) {
                         lim1++;
                     } else {
-                        Rows.add(lim1, i);
-                        Values.add(lim1, value);
+                        rows.add(lim1, i);
+                        values.add(lim1, value);
                         break;
                     }
                 }
@@ -160,25 +160,25 @@ public class SparseMatrixCSC {
             }
         }
 
-        this.values = new int[Values.size()];
-        this.rows = new int[Rows.size()];
+        this.values = new int[values.size()];
+        this.rows = new int[rows.size()];
 
         a = 0;
-        for (int V : Values) {
-            this.values[a] = V;
+        for (int v : values) {
+            this.values[a] = v;
             a++;
         }
 
         a = 0;
-        for (int R : Rows) {
-            this.rows[a] = R;
+        for (int r : rows) {
+            this.rows[a] = r;
             a++;
         }
     }
 
     /*
      * This method returns a representation of the Squared matrix
-     * 
+     *
      * @return object that contests the squared matrix;
      */
     public SparseMatrixCSC getSquareMatrix() throws OperationNotSupportedException {
@@ -195,7 +195,7 @@ public class SparseMatrixCSC {
 
     /*
      * This method returns a representation of the transposed matrix
-     * 
+     *
      * @return object that contests the transposed matrix;
      */
     public SparseMatrixCSC getTransposedMatrix() throws OperationNotSupportedException {
@@ -224,11 +224,11 @@ public class SparseMatrixCSC {
 
     public SparseMatrixCSC createRepresentationTrans(int[][] matrix) {
         SparseMatrixCSC matCSC = new SparseMatrixCSC();
-        int[] trans_values;
-        int[] trans_row;
+        int[] transValues;
+        int[] transRow;
         LinkedList<Integer> values = new LinkedList<Integer>();
         LinkedList<Integer> rows = new LinkedList<Integer>();
-        int[] trans_columns = new int[matrix[0].length + 1];
+        int[] transColumns = new int[matrix[0].length + 1];
         int cnt = 0;
         for (int i = 0; i < matrix[0].length; i++) {
             for (int j = 0; j < matrix.length; j++) {
@@ -239,32 +239,32 @@ public class SparseMatrixCSC {
                 }
             }
             if (i == 0) {
-                trans_columns[1] = cnt;
+                transColumns[1] = cnt;
                 cnt = 0;
             } else {
-                trans_columns[i + 1] = trans_columns[i] + cnt;
+                transColumns[i + 1] = transColumns[i] + cnt;
                 cnt = 0;
             }
         }
 
         // Valores
-        trans_values = new int[values.size()];
+        transValues = new int[values.size()];
         int i = 0;
         for (int val : values) {
-            trans_values[i] = val;
+            transValues[i] = val;
             i++;
         }
 
         // Filas
-        trans_row = new int[rows.size()];
+        transRow = new int[rows.size()];
         i = 0;
         for (int row : rows) {
-            trans_row[i] = row;
+            transRow[i] = row;
             i++;
         }
-        matCSC.columns = trans_columns;
-        matCSC.rows = trans_row;
-        matCSC.values = trans_values;
+        matCSC.columns = transColumns;
+        matCSC.rows = transRow;
+        matCSC.values = transValues;
         matCSC.matrix = matrix;
 
         return matCSC;
